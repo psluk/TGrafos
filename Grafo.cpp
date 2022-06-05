@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Lista.hpp"
+#include "Grafo.hpp"
 #include "Pila.hpp"
 #include "Arbol.hpp"
 
@@ -127,14 +127,14 @@ Conexion::~Conexion()
 
 // CONSTRUCTOR
 
-Lista::Lista()
+Grafo::Grafo()
 {
 	this->primero = NULL;
 }
 
 // DESTRUCTOR
 
-Lista::~Lista()
+Grafo::~Grafo()
 {
 	delete primero;
 	primero = NULL;
@@ -142,7 +142,7 @@ Lista::~Lista()
 
 // AGREGAR NODO
 
-void Lista::agregarNodo(long long int codigoCarrera)
+void Grafo::agregarNodo(long long int codigoCarrera)
 {
 	if (this->primero)
 	{
@@ -164,12 +164,12 @@ void Lista::agregarNodo(long long int codigoCarrera)
 	}
 }
 
-bool Lista::agregarAdyacente(long long int codigoCarrera1, long long int codigoCarrera2)
+bool Grafo::agregarAdyacente(long long int codigoCarrera1, long long int codigoCarrera2)
 {
 	return agregarAdyacente(codigoCarrera1, codigoCarrera2, 0);
 }
 
-bool Lista::agregarAdyacente(long long int codigoCarrera1, long long int codigoCarrera2, int peso)
+bool Grafo::agregarAdyacente(long long int codigoCarrera1, long long int codigoCarrera2, int peso)
 {
 	Vertice *nodo1 = devolverNodo(codigoCarrera1);
 	if (nodo1)
@@ -185,12 +185,12 @@ bool Lista::agregarAdyacente(long long int codigoCarrera1, long long int codigoC
 	return false;
 }
 
-void Lista::agregarBidireccional(long long int codigoCarrera1, long long int codigoCarrera2)
+void Grafo::agregarBidireccional(long long int codigoCarrera1, long long int codigoCarrera2)
 {
 	agregarBidireccional(codigoCarrera1, codigoCarrera2, 0);
 }
 
-void Lista::agregarBidireccional(long long int codigoCarrera1, long long int codigoCarrera2, int peso)
+void Grafo::agregarBidireccional(long long int codigoCarrera1, long long int codigoCarrera2, int peso)
 {
 	if (agregarAdyacente(codigoCarrera1, codigoCarrera2, peso))
 	{
@@ -202,7 +202,7 @@ void Lista::agregarBidireccional(long long int codigoCarrera1, long long int cod
 
 // COMPROBACIONES
 
-Vertice *Lista::devolverNodo(long long int codigoCarrera)
+Vertice *Grafo::devolverNodo(long long int codigoCarrera)
 {
 	Vertice *auxiliar = primero;
 	while (auxiliar)
@@ -216,7 +216,7 @@ Vertice *Lista::devolverNodo(long long int codigoCarrera)
 	return auxiliar;
 }
 
-bool Lista::existe(long long int codigoCarrera)
+bool Grafo::existe(long long int codigoCarrera)
 {
 	// NULL = 0 = false
 	// Cualquier otro puntero = true
@@ -225,7 +225,7 @@ bool Lista::existe(long long int codigoCarrera)
 
 // IMPRIMIR
 
-void Lista::imprimir()
+void Grafo::imprimir()
 {
 	Vertice *auxiliar = primero;
 	Conexion *auxiliar2;
@@ -259,7 +259,7 @@ void Lista::imprimir()
 	}
 }
 
-void Lista::imprimir(long long int codigoCarrera)
+void Grafo::imprimir(long long int codigoCarrera)
 {
 	Vertice *auxiliar = devolverNodo(codigoCarrera);
 	if (auxiliar)
@@ -290,12 +290,13 @@ void Lista::imprimir(long long int codigoCarrera)
 	else
 	{
 		std::cout << "\t[ERROR]\t\tEl nodo [" << codigoCarrera << "] no existe.\n";
+
 	}
 }
 
 // PUNTOS DE ARTICULACIÓN
 
-std::string Lista::puntosDeArticulacion()
+std::string Grafo::puntosDeArticulacion()
 {
 	Vertice *auxiliar = primero;
 	Conexion *adyacente;
@@ -338,7 +339,7 @@ std::string Lista::puntosDeArticulacion()
 
 // DESPUÉS DE IMPRIMIR O HACER PUNTOS DE ARTICULACIÓN
 
-void Lista::resetearVisitado()
+void Grafo::resetearVisitado()
 {
 	Vertice *auxiliar = primero;
 	while (auxiliar)
@@ -350,7 +351,7 @@ void Lista::resetearVisitado()
 
 // COMPROBACIONES
 
-bool Lista::adyacentes(long long int codigoCarrera1, long long int codigoCarrera2)
+bool Grafo::adyacentes(long long int codigoCarrera1, long long int codigoCarrera2)
 {
 	Vertice *auxiliar1 = devolverNodo(codigoCarrera1), *auxiliar2 = devolverNodo(codigoCarrera2);
 	if (!auxiliar1 || !auxiliar2)
@@ -361,7 +362,7 @@ bool Lista::adyacentes(long long int codigoCarrera1, long long int codigoCarrera
 	return adyacentes(auxiliar1, auxiliar2);
 }
 
-bool Lista::adyacentes(Vertice *nodo1, Vertice *nodo2)
+bool Grafo::adyacentes(Vertice *nodo1, Vertice *nodo2)
 {
 	if (!(nodo1 && nodo2))
 	{

@@ -202,7 +202,7 @@ int NodoArbol::corregirBajo()
 
 // AGREGAR HIJO DONDE CORRESPONDA
 
-void NodoArbol::agregarHijoAdyacente(Lista *lista, Vertice *vertice)
+void NodoArbol::agregarHijoAdyacente(Grafo *lista, Vertice *vertice)
 {
     if (this->hijos)
     {
@@ -234,7 +234,7 @@ void NodoArbol::agregarHijoAdyacente(Lista *lista, Vertice *vertice)
     }
 }
 
-int NodoArbol::nivelParaInsercion(Lista *lista, Vertice *vertice)
+int NodoArbol::nivelParaInsercion(Grafo *lista, Vertice *vertice)
 {
     int maximo = -1, actual;
     Hijo *auxiliar = hijos;
@@ -310,7 +310,7 @@ std::string NodoArbol::puntosDeArticulacion(bool esRaiz)
 
 // ÁRBOL
 
-Arbol::Arbol(Lista *lista)
+Arbol::Arbol(Grafo *lista)
 {
     raiz = NULL;
     this->lista = lista;

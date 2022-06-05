@@ -2,10 +2,10 @@
 #define ARBOL_HPP
 
 #include <string>
-#include "Lista.hpp"
+#include "Grafo.hpp"
 
 class NodoArbol;
-class Lista;
+class Grafo;
 
 // HIJOS
 
@@ -38,7 +38,7 @@ private:
     NodoArbol *retorno;
 
     // AGREGAR HIJO DONDE CORRESPONDA
-    int nivelParaInsercion(Lista *lista, Vertice *vertice);
+    int nivelParaInsercion(Grafo *lista, Vertice *vertice);
 
 public:
     NodoArbol(Vertice *vertice, int numero);
@@ -60,7 +60,7 @@ public:
     int corregirBajo();
     
     // AGREGAR HIJO DONDE CORRESPONDA
-    void agregarHijoAdyacente(Lista *lista, Vertice *vertice);
+    void agregarHijoAdyacente(Grafo *lista, Vertice *vertice);
 
     // PUNTOS
     int cantidadDeHijos();
@@ -75,12 +75,12 @@ class Arbol
 {
 private:
     NodoArbol *raiz;
-    Lista *lista;
+    Grafo *lista;
     int elementos;
 
 public:
     // CONSTRUCTOR Y DESTRUCTOR
-    Arbol(Lista *lista);
+    Arbol(Grafo *lista);
     ~Arbol();
 
     // ASIGNAR NUMERACIÓN

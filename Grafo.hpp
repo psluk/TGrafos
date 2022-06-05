@@ -1,5 +1,5 @@
-#ifndef LISTA_HPP
-#define LISTA_HPP
+#ifndef GRAFO_HPP
+#define GRAFO_HPP
 
 #include <string>
 #include "Reportes.hpp"
@@ -27,7 +27,7 @@ public:
 	int pesoDeConexion(Vertice *adyacente); // Si es adyacente, devuelve el peso. Si no, devuelve -1
 	int cantidadAdyacentes();
 
-	friend class Lista;
+	friend class Grafo;
 	friend class Conexion;
 	friend class Arbol;
 	friend class NodoArbol;
@@ -49,12 +49,12 @@ public:
 	~Conexion();
 
 	friend class Vertice;
-	friend class Lista;
+	friend class Grafo;
 };
 
 // LISTA PRINCIPAL
 
-class Lista
+class Grafo
 {
 private:
 	Vertice *primero;
@@ -67,8 +67,8 @@ private:
 
 public:
 	// CONSTRUCTOR Y DESTRUCTOR
-	Lista();
-	~Lista();
+	Grafo();
+	~Grafo();
 
 	// AGREGAR NODO
 	void agregarNodo(long long int codigoCarrera);

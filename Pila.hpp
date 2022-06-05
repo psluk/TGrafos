@@ -1,7 +1,7 @@
 #ifndef PILA_HPP
 #define PILA_HPP
 
-#include "Lista.hpp"
+#include "Grafo.hpp"
 
 class Vertice;
 
