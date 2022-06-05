@@ -10,4 +10,10 @@ Fecha de entrega: **Jueves 9 de junio del 2022**
 
 # Archivos de referencia:
 
-1. [Enunciado](https://github.com/psluk/TGrafos/blob/main/Enunciado/Enunciado.pdf)
+1. [Enunciado](/Enunciado/Enunciado.pdf)
+
+# Grafos:
+
+|Grafo 1|Grafo 2|
+|:---:|:---:|
+|[![](/Grafos%20dibujados/Grafo%20n.º%201.png)](/Grafos%20dibujados/Grafo%20n.º%201.png)|[![](/Grafos%20dibujados/Grafo%20n.º%202.png)](/Grafos%20dibujados/Grafo%20n.º%202.png)|
