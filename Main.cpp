@@ -1,9 +1,11 @@
 #include <iostream>
 #include "Lista.hpp"
+#include "Reportes.hpp"
 
 int main()
 {
 	Lista lista;
+	Reportes reportes;
 
 	// GRAFO 1
 	/*

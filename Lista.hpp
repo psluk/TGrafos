@@ -2,6 +2,7 @@
 #define LISTA_HPP
 
 #include <string>
+#include "Reportes.hpp"
 
 // NODO DE VÉRTICE
 
