@@ -53,7 +53,7 @@ public:
     bool esHijo(NodoArbol *buscado);
 
     // RECORRIDO
-    void preorden();
+    std::string preorden();
 
     // ASIGNAR NUMERACIÓN
     void asignar(int &contador);

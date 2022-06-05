@@ -26,6 +26,10 @@ class Pila
 {
 private:
 	NodoPila *frente;
+
+	// REPORTE EN ARCHIVO
+	void escribirPila();
+
 public:
 	// CONSTRUCTOR
 	Pila();

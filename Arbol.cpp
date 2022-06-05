@@ -144,16 +144,30 @@ bool NodoArbol::esHijo(NodoArbol *buscado)
 
 // RECORRIDO
 
-void NodoArbol::preorden()
+std::string NodoArbol::preorden()
 {
-    std::cout << "[" << this->vertice->codigoCarrera << "] -> ";
+    std::string reporte = "[", retorno;
+    reporte += std::to_string(this->vertice->codigoCarrera);
+    reporte += "] (";
+    reporte += std::to_string(numero + 1);
+    reporte += ", ";
+    reporte += std::to_string(bajo + 1);
+    reporte += ")";
+
 
     Hijo *hijo = hijos;
     while (hijo)
     {
-        hijo->hijo->preorden();
+        retorno = hijo->hijo->preorden();
+        if (retorno != "")
+        {
+            reporte += " -> ";
+            reporte += retorno;
+        }
         hijo = hijo->siguiente;
     }
+
+    return reporte;
 }
 
 // ASIGNAR NUMERACIÓN
@@ -363,10 +377,17 @@ void Arbol::agregarRetorno(Vertice *destino, Vertice *retorno)
 
 void Arbol::preorden()
 {
+    std::string reporte = "\n\t[INFO]\t\tRecorrido en preorden (formato: num, bajo):\n\t\t\t\t";
     if (raiz)
     {
-        raiz->preorden();
+        reporte += raiz->preorden();
     }
+    else
+    {
+        reporte += "* sin elementos *";
+    }
+    reporte += "\n";
+    ReporteEnArchivo::archivoDeReportes->escribir(reporte);
 }
 
 // PUNTOS

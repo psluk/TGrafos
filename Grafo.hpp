@@ -31,6 +31,7 @@ public:
 	friend class Conexion;
 	friend class Arbol;
 	friend class NodoArbol;
+	friend class Pila;
 };
 
 // NODO DE CONEXIÓN
@@ -86,7 +87,7 @@ public:
 	void imprimir(long long int codigoCarrera); // codigoCarrera = donde empieza
 
 	// PUNTOS DE ARTICULACIÓN
-	std::string puntosDeArticulacion();
+	void puntosDeArticulacion();
 
 	// COMPROBACIONES
 	bool existe(long long int codigoCarrera);

@@ -261,10 +261,15 @@ void Grafo::imprimir()
 
 void Grafo::imprimir(long long int codigoCarrera)
 {
+	std::string reporte = "\n-------------------- RECORRIDO EN PROFUNDIDAD --------------------\n";
+	ReporteEnArchivo::archivoDeReportes->escribir(reporte);
+	reporte = "";
+
 	Vertice *auxiliar = devolverNodo(codigoCarrera);
 	if (auxiliar)
 	{
-		std::cout << "\t[INFO]\t\t";
+		reporte = "\n\t[INFO]\t\tRecorrido en profundidad:\n\t\t\t\t";
+		std::cout << "\n\t[INFO]\t\tRecorrido en profundidad:\n\t\t\t";
 		Conexion *adyacente;
 		Pila pila;
 		pila.push(auxiliar);
@@ -272,7 +277,11 @@ void Grafo::imprimir(long long int codigoCarrera)
 		while (!pila.vacia())
 		{
 			auxiliar = pila.pop();
-			std::cout << "[" << auxiliar->codigoCarrera << "] -> ";
+			std::cout << "[" << auxiliar->codigoCarrera << "]";
+			reporte += "[";
+			reporte += std::to_string(auxiliar->codigoCarrera);
+			reporte += "]";
+
 			adyacente = auxiliar->sublista;
 			while (adyacente)
 			{
@@ -283,58 +292,88 @@ void Grafo::imprimir(long long int codigoCarrera)
 				}
 				adyacente = adyacente->siguiente;
 			}
+
+			if (!pila.vacia())
+			{
+				// Añade la flecha si aún quedan elementos
+				// después del actual
+				std::cout << " -> ";
+				reporte += " -> ";
+			}
 		}
 		std::cout << "\n";
+		reporte += "\n";
+		ReporteEnArchivo::archivoDeReportes->escribir(reporte);
 		resetearVisitado();
 	}
 	else
 	{
-		std::cout << "\t[ERROR]\t\tEl nodo [" << codigoCarrera << "] no existe.\n";
+		std::cout << "\n\t[ERROR]\t\tEl nodo [" << codigoCarrera << "] no existe.\n";
 
+		reporte = "\n\t[ERROR]\t\tEl nodo [";
+		reporte += std::to_string(codigoCarrera);
+		reporte += "] no existe.\n";
+		ReporteEnArchivo::archivoDeReportes->escribir(reporte);
 	}
 }
 
 // PUNTOS DE ARTICULACIÓN
 
-std::string Grafo::puntosDeArticulacion()
+void Grafo::puntosDeArticulacion()
 {
-	Vertice *auxiliar = primero;
-	Conexion *adyacente;
-	Pila pila;
-	Arbol arbol(this);
-	pila.push(auxiliar);
-	auxiliar->visitado = true;
-	while (!pila.vacia())
-	{
-		auxiliar = pila.pop();
-		arbol.agregar(auxiliar);
-		adyacente = auxiliar->sublista;
-		while (adyacente)
-		{
-			arbol.agregarRetorno(auxiliar, adyacente->adyacente);
-			if (!adyacente->adyacente->visitado)
-			{
-				pila.push(adyacente->adyacente);
-				adyacente->adyacente->visitado = true;
-			}
-			adyacente = adyacente->siguiente;
-		}
-	}
-	std::cout << "\n";
-	resetearVisitado();
+	std::string reporte = "\n-------------------- PUNTOS DE ARTICULACION --------------------\n";
+	ReporteEnArchivo::archivoDeReportes->escribir(reporte);
+	reporte = "";
 
-	arbol.asignarNumeros();
-	arbol.preorden();
-	std::string resultado, retorno = arbol.puntosDeArticulacion();
-	if (retorno == "")
+	Vertice *auxiliar = primero;
+
+	if (auxiliar)
 	{
-		resultado = "No hay.";
+		reporte = "\n\t[INFO]\t\tPuntos de articulacion:\n\t\t\t\t";
+		std::cout << "\n\t[INFO]\t\tPuntos de articulaci" << (char)162 << "n:\n\t\t\t";
+
+		Conexion *adyacente;
+		Pila pila;
+		Arbol arbol(this);
+		pila.push(auxiliar);
+		auxiliar->visitado = true;
+		while (!pila.vacia())
+		{
+			auxiliar = pila.pop();
+			arbol.agregar(auxiliar);
+			adyacente = auxiliar->sublista;
+			while (adyacente)
+			{
+				arbol.agregarRetorno(auxiliar, adyacente->adyacente);
+				if (!adyacente->adyacente->visitado)
+				{
+					pila.push(adyacente->adyacente);
+					adyacente->adyacente->visitado = true;
+				}
+				adyacente = adyacente->siguiente;
+			}
+		}
+		resetearVisitado();
+
+		arbol.asignarNumeros();
+		arbol.preorden();
+		std::string retorno = arbol.puntosDeArticulacion();
+		if (retorno == "")
+		{
+			std::cout << "No hay.";
+			reporte += "No hay.";
+		}
+		else
+		{
+			std::cout << retorno;
+			reporte += retorno;
+		}
+		std::cout << "\n";
+
+		reporte += "\n";
+		ReporteEnArchivo::archivoDeReportes->escribir(reporte);
 	}
-	else
-	{
-		resultado = retorno;
-	}
-	return resultado;
+	return;
 }
 
 // DESPUÉS DE IMPRIMIR O HACER PUNTOS DE ARTICULACIÓN

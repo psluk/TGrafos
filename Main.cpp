@@ -50,6 +50,8 @@ int main()
 	grafo1.imprimir();
 	std::cout << "\n\n";
 	grafo1.imprimir(5001);
+	grafo1.puntosDeArticulacion();
+
 	std::cout << "\n\n";
 
 	// GRAFO 2
@@ -85,6 +87,6 @@ int main()
 	std::cout << "\n\n";
 	grafo2.imprimir(5001);
 
-	std::cout << "\n\nPuntos de articulaci" << (char)162 << "n: " << grafo2.puntosDeArticulacion();
+	grafo2.puntosDeArticulacion();
 	return 0;
 }
