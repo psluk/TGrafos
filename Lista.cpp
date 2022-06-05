@@ -31,7 +31,7 @@ Vertice::~Vertice()
 
 // LISTA DE ADYACENTES
 
-void Vertice::agregarAdyacente(Vertice *adyacente)
+void Vertice::agregarAdyacente(Vertice *adyacente, int peso)
 {
 	if (this->sublista)
 	{
@@ -45,11 +45,11 @@ void Vertice::agregarAdyacente(Vertice *adyacente)
 			}
 			auxiliar = auxiliar->siguiente;
 		}
-		auxiliar->siguiente = new Conexion(adyacente);
+		auxiliar->siguiente = new Conexion(adyacente, peso);
 	}
 	else
 	{
-		this->sublista = new Conexion(adyacente);
+		this->sublista = new Conexion(adyacente, peso);
 	}
 }
 
@@ -67,6 +67,22 @@ bool Vertice::esAdyacente(Vertice *adyacente)
 	return false;
 }
 
+int Vertice::pesoDeConexion(Vertice *adyacente)
+{
+	// Si existe el adyacente, devuelve el peso de la conexión
+	// Si no, devuelve -1
+	Conexion *auxiliar = this->sublista;
+	while (auxiliar)
+	{
+		if (auxiliar->adyacente == adyacente)
+		{
+			return auxiliar->peso;
+		}
+		auxiliar = auxiliar->siguiente;
+	}
+	return -1;
+}
+
 int Vertice::cantidadAdyacentes()
 {
 	Conexion *auxiliar = this->sublista;
@@ -81,12 +97,20 @@ int Vertice::cantidadAdyacentes()
 
 // -------------------- CONEXIÓN --------------------
 
-// CONSTRUCTOR
+// CONSTRUCTORES
 
 Conexion::Conexion(Vertice *adyacente)
 {
 	this->adyacente = adyacente;
 	this->siguiente = NULL;
+	this->peso = 0;
+}
+
+Conexion::Conexion(Vertice *adyacente, int peso)
+{
+	this->adyacente = adyacente;
+	this->siguiente = NULL;
+	this->peso = peso;
 }
 
 // DESTRUCTOR
@@ -142,13 +166,18 @@ void Lista::agregarNodo(long long int codigoCarrera)
 
 bool Lista::agregarAdyacente(long long int codigoCarrera1, long long int codigoCarrera2)
 {
-	Vertice *nodo1 =  devolverNodo(codigoCarrera1);
+	return agregarAdyacente(codigoCarrera1, codigoCarrera2, 0);
+}
+
+bool Lista::agregarAdyacente(long long int codigoCarrera1, long long int codigoCarrera2, int peso)
+{
+	Vertice *nodo1 = devolverNodo(codigoCarrera1);
 	if (nodo1)
 	{
 		Vertice *nodo2 = devolverNodo(codigoCarrera2);
 		if (nodo2)
 		{
-			nodo1->agregarAdyacente(nodo2);
+			nodo1->agregarAdyacente(nodo2, peso);
 			return true;
 		}
 	}
@@ -158,11 +187,16 @@ bool Lista::agregarAdyacente(long long int codigoCarrera1, long long int codigoC
 
 void Lista::agregarBidireccional(long long int codigoCarrera1, long long int codigoCarrera2)
 {
-	if (agregarAdyacente(codigoCarrera1, codigoCarrera2))
+	agregarBidireccional(codigoCarrera1, codigoCarrera2, 0);
+}
+
+void Lista::agregarBidireccional(long long int codigoCarrera1, long long int codigoCarrera2, int peso)
+{
+	if (agregarAdyacente(codigoCarrera1, codigoCarrera2, peso))
 	{
 		// Si se pudo agregar la primera adyacencia (de 1 a 2), se agrega la misma
 		// en dirección contraria
-		agregarAdyacente(codigoCarrera2, codigoCarrera1);
+		agregarAdyacente(codigoCarrera2, codigoCarrera1, peso);
 	}
 }
 
@@ -210,7 +244,7 @@ void Lista::imprimir()
 		{
 			contador2++;
 			std::cout << "\t\t" << contador2 << ".\t[" << auxiliar2->adyacente->codigoCarrera
-			<< "]\n";
+					  << "]\t(peso: " << auxiliar2->peso << ")\n";
 			auxiliar2 = auxiliar2->siguiente;
 		}
 		if (!contador2)
