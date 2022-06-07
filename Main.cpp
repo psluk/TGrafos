@@ -1,12 +1,12 @@
 #include <iostream>
+
 #include "Menu.hpp"
-//#include "Grafo.hpp"
-//#include "Reportes.hpp"
+
 
 int main()
 {
-	Menu m; m.menu_Principal();
-	/*
+	//Menu m; m.menu_Principal();
+	
 	Grafo grafo1, grafo2;
 	Reportes reportes;
 
@@ -91,6 +91,6 @@ int main()
 	grafo2.imprimir(5001);
 
 	grafo2.puntosDeArticulacion();
-	*/
+	
 	return 0;
 }

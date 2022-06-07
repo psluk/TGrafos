@@ -44,7 +44,7 @@ void Menu::opcion6()
 }
 
 
-void Menu::menu_Principal() ()
+void Menu::menu_Principal()
 {
 	bool flag = true;
 	do {
@@ -74,27 +74,27 @@ void Menu::menu_Principal() ()
         
 		switch (opcion){
             case 1:
-            	this.opcion1();
+            	this->opcion1();
             	cin.ignore();
 				break;
             case 2:
-            	this.opcion2();
+            	this->opcion2();
             	cin.ignore();
                 break;
             case 3:
-            	this.opcion3();
+            	this->opcion3();
             	cin.ignore();
             	break;
             case 4:
-            	this.opcion4();
+            	this->opcion4();
             	cin.ignore();
                 break;
             case 5:
-            	this.opcion5();
+            	this->opcion5();
             	cin.ignore();
                 break;
             case 6:
-            	this.opcion6();
+            	this->opcion6();
             	cin.ignore();
                 break;
             case 7:
