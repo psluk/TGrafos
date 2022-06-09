@@ -41,7 +41,7 @@ private:
     int nivelParaInsercion(Grafo *lista, Vertice *vertice);
 
 public:
-    NodoArbol(Vertice *vertice, int numero);
+    NodoArbol(Vertice *vertice);
     ~NodoArbol();
 
     // AGREGAR HIJO DE NODO ACTUAL

@@ -25,19 +25,16 @@ void Hijo::agregarHijo(NodoArbol *hijo)
     {
         auxiliar = auxiliar->siguiente;
     }
-    hijo->numero = auxiliar->hijo->numero + 1;
-    // Se le da un número tentantivo porque estamos agregando las aristas de retorno antes
-    // de asignar los números finales. Así, el programa escoge, en caso de que un nodo tenga
-    // varias aristas de retorno, la que sea hacia el nodo con el número menor
+    hijo->numero = 0;
     auxiliar->siguiente = new Hijo(hijo);
 }
 
 // NODO DE ÁRBOL
 
-NodoArbol::NodoArbol(Vertice *vertice, int numero)
+NodoArbol::NodoArbol(Vertice *vertice)
 {
     this->vertice = vertice;
-    this->numero = numero;
+    this->numero = 0;
     hijos = NULL;
     retorno = NULL;
 }
@@ -49,10 +46,7 @@ NodoArbol::~NodoArbol()
 
 void NodoArbol::agregarHijo(Vertice *hijo)
 {
-    NodoArbol *nuevo = new NodoArbol(hijo, this->numero + 1);
-    // Se le da un número tentantivo porque estamos agregando las aristas de retorno antes
-    // de asignar los números finales. Así, el programa escoge, en caso de que un nodo tenga
-    // varias aristas de retorno, la que sea hacia el nodo con el número menor
+    NodoArbol *nuevo = new NodoArbol(hijo);
     if (this->hijos)
     {
         this->hijos->agregarHijo(nuevo);
@@ -110,6 +104,15 @@ bool NodoArbol::agregarRetorno(Vertice *destino, NodoArbol *retorno)
                 //    que el del retorno que se le pretende dar
                 this->retorno = retorno;
             }
+            else
+            {
+                // Puede ser que necesite agregarse la arista de retorno, pero en dirección contraria
+                // (apuntando del retorno hacia este nodo)
+                if (retorno && !(retorno->retorno && retorno->retorno->numero <= numero) && retorno->numero > numero)
+                {
+                    retorno->retorno = this;
+                }
+            }
         }
         return true;
     }
@@ -146,24 +149,30 @@ bool NodoArbol::esHijo(NodoArbol *buscado)
 
 std::string NodoArbol::preorden()
 {
-    std::string reporte = "[", retorno;
+    std::string reporte = "\n\t\t\t";
+    reporte += std::to_string(numero + 1);
+    reporte += ".\t[";
     reporte += std::to_string(this->vertice->codigoCarrera);
     reporte += "] (";
     reporte += std::to_string(numero + 1);
     reporte += ", ";
     reporte += std::to_string(bajo + 1);
-    reporte += ")";
-
+    reporte += ")\t\tRetorno: ";
+    if (this->retorno)
+    {
+        reporte += "[";
+        reporte += std::to_string(this->retorno->vertice->codigoCarrera);
+        reporte += "]";
+    }
+    else
+    {
+        reporte += "* no hay *";
+    }
 
     Hijo *hijo = hijos;
     while (hijo)
     {
-        retorno = hijo->hijo->preorden();
-        if (retorno != "")
-        {
-            reporte += " -> ";
-            reporte += retorno;
-        }
+        reporte += hijo->hijo->preorden();
         hijo = hijo->siguiente;
     }
 
@@ -189,7 +198,7 @@ int NodoArbol::corregirBajo()
 {
     if (this->retorno)
     {
-        this->bajo = this->retorno->numero;
+        this->bajo = this->retorno->bajo;
     }
     if (this->hijos)
     {
@@ -291,9 +300,80 @@ int NodoArbol::cantidadDeHijos()
 
 std::string NodoArbol::puntosDeArticulacion(bool esRaiz)
 {
-    std::string resultado = "", actual = "";
+    std::string resultado = "", actual = "", reporte;
     Hijo *auxiliar = hijos;
     bool agregado = false; // Para no agregarlo más de una vez
+
+    reporte = "\n\t\t\t";
+    reporte += std::to_string(this->numero + 1);
+    reporte += ".\t[";
+    reporte += std::to_string(this->vertice->codigoCarrera);
+    reporte += "]\t(";
+    reporte += "num: ";
+    reporte += std::to_string(this->numero + 1);
+    reporte += " | bajo: ";
+    reporte += std::to_string(this->bajo + 1);
+    reporte += ")";
+
+    if (esRaiz)
+    {
+        reporte += "\n\t\t\t\t\t¿Hijos (";
+        reporte += std::to_string(cantidadDeHijos());
+        reporte += ") > 1?\t\t\t";
+        if (cantidadDeHijos() > 1)
+        {
+            agregado = true;
+            reporte += "Si";
+        }
+        else
+        {
+            reporte += "No";
+        }
+    }
+    else
+    {
+        if (auxiliar)
+        {
+            while (auxiliar)
+            {
+                reporte += "\n\t\t\t\t\t[";
+                reporte += std::to_string(auxiliar->hijo->vertice->codigoCarrera);
+                reporte += "] ¿Bajo (";
+                reporte += std::to_string(auxiliar->hijo->bajo + 1);
+                reporte += ") >= ";
+                reporte += std::to_string(this->numero + 1);
+                reporte += "?\t";
+                if (auxiliar->hijo->bajo >= numero)
+                {
+                    agregado = true;
+                    reporte += "Si";
+                }
+                else
+                {
+                    reporte += "No";
+                }
+                auxiliar = auxiliar->siguiente;
+            }
+        }
+        else
+        {
+            reporte += "\n\t\t\t\t\tSin hijos";
+        }
+    }
+    reporte += "\n\t\t\t\tResultado: ";
+    if (agregado)
+    {
+        reporte += "Si";
+    }
+    else
+    {
+        reporte += "No";
+    }
+    reporte += " es punto de articulacion\n";
+    ReporteEnArchivo::archivoDeReportes->escribir(reporte);
+
+    auxiliar = hijos;
+    agregado = false;
 
     while (auxiliar)
     {
@@ -357,8 +437,9 @@ void Arbol::agregar(Vertice *vertice)
     }
     else
     {
-        raiz = new NodoArbol(vertice, 0);
+        raiz = new NodoArbol(vertice);
     }
+    asignarNumeros();
 }
 
 void Arbol::agregarRetorno(Vertice *destino, Vertice *retorno)
@@ -377,7 +458,7 @@ void Arbol::agregarRetorno(Vertice *destino, Vertice *retorno)
 
 void Arbol::preorden()
 {
-    std::string reporte = "\n\t[INFO]\t\tRecorrido en preorden (formato: num, bajo):\n\t\t\t\t";
+    std::string reporte = "\n\t[INFO]\t\tRecorrido en preorden. Formato: [cod] (num, bajo):\n";
     if (raiz)
     {
         reporte += raiz->preorden();
@@ -395,6 +476,7 @@ void Arbol::preorden()
 std::string Arbol::puntosDeArticulacion()
 {
     std::string resultado = "";
+    ReporteEnArchivo::archivoDeReportes->escribir("\n\t[INFO]\t\tAnalizando posibles puntos:\n");
     if (raiz)
     {
         resultado = raiz->puntosDeArticulacion(true);
