@@ -438,7 +438,7 @@ bool Grafo::adyacentes(Vertice *nodo1, Vertice *nodo2)
 
 void Grafo::kruskal()
 {
-	std::string reporte = "\n-------------------- KRUSKAL --------------------\n";
+	ReporteEnArchivo::archivoDeReportes->escribir("\n-------------------- KRUSKAL --------------------\n");
 	Ruta conexiones, aem;
 	// conexiones = lista con todas las conexiones
 	// aem = lista con las conexiones del árbol de expansión mínima
