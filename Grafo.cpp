@@ -2,6 +2,7 @@
 #include "Grafo.hpp"
 #include "Pila.hpp"
 #include "Arbol.hpp"
+#include "Ruta.hpp"
 
 // -------------------- VÉRTICE --------------------
 
@@ -409,4 +410,59 @@ bool Grafo::adyacentes(Vertice *nodo1, Vertice *nodo2)
 		return false;
 	}
 	return nodo1->esAdyacente(nodo2) || nodo2->esAdyacente(nodo1);
+}
+
+// KRUSKAL
+void Grafo::kruskal()
+{
+	Ruta conexiones, aem;
+	// conexiones = lista con todas las conexiones
+	// aem = lista con las conexiones del árbol de expansión mínima
+
+	Vertice *nodo = primero;
+	Conexion *auxiliar;
+
+	// Agrega todas las conexiones a la lista correspondiente
+	while (nodo)
+	{
+		auxiliar = nodo->sublista;
+		while (auxiliar)
+		{
+			conexiones.insertarOrdenado(nodo, auxiliar->adyacente, auxiliar->peso);
+			auxiliar = auxiliar->siguiente;
+		}
+		nodo = nodo->siguiente;
+	}
+
+	conexiones.imprimir("Todas las conexiones", false);
+
+	// Ahora, recorre la lista de primero (menor peso) a fin (mayor peso)
+	NodoRuta *conexion = conexiones.primero;
+
+	while (conexion)
+	{
+		if (!conexion->origen->visitado || !conexion->llegada->visitado)
+		{
+			// Si alguno no ha sido visitado (agregado al AEM) aún,
+			// no se va a armar ningún ciclo, así que no hace falta verificarlo
+			aem.insertarFinal(conexion->origen, conexion->llegada, conexion->peso);
+			conexion->origen->visitado = true;
+			conexion->llegada->visitado = true;
+		}
+		else
+		{
+			// Si ya están agregados los dos, hay que verificar que no haya
+			// alguna ruta posible entre ambos
+			if (!aem.existeRuta(conexion->origen, conexion->llegada))
+			{
+				// Se inserta solo si no hay alguna ruta posible entre ambos nodos
+				// (en ese caso, se cerraría un ciclo al agregar esta conexión)
+				aem.insertarFinal(conexion->origen, conexion->llegada, conexion->peso);
+			}
+		}
+		conexion = conexion->siguiente;
+	}
+
+	aem.imprimir("AEM", true);
+	resetearVisitado();
 }

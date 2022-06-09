@@ -4,7 +4,7 @@
 /*
   Estructura de datos GR1 - Proyecto #2. 
   Profesora: Ivannia Cerdas Quesada.
-  Estudiantes: Jorge Luis Rodríguez Cruz. Carnet: 2020010773.
+  Estudiantes: Jorge Luis Rodrï¿½guez Cruz. Carnet: 2020010773.
 */
 
 #include <iostream> 

@@ -1,4 +1,4 @@
-#include "Funciones auxiliares.hpp"
+#include "FuncionesAuxiliares.hpp"
 
 bool FuncionesAux::esEntero (string & str) 
 {

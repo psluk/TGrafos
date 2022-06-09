@@ -32,6 +32,7 @@ public:
 	friend class Arbol;
 	friend class NodoArbol;
 	friend class Pila;
+	friend class Ruta;
 };
 
 // NODO DE CONEXIÓN
@@ -95,6 +96,9 @@ public:
 	// COMPROBACIÓN DE ADYACENCIA (en cualquier dirección: 1 → 2, 2 → 1)
 	bool adyacentes(long long int codigoCarrera1, long long int codigoCarrera2);
 	bool adyacentes(Vertice *nodo1, Vertice *nodo2);
+
+	// KRUSKAL
+	void kruskal();
 };
 
 #endif

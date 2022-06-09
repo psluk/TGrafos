@@ -4,7 +4,7 @@
 #include <iostream> 
 #include <cstdlib>
 
-#include "Funciones auxiliares.hpp"
+#include "FuncionesAuxiliares.hpp"
 #include "Grafo.hpp"
 #include "Reportes.hpp"
 
