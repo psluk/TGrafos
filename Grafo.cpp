@@ -96,6 +96,26 @@ int Vertice::cantidadAdyacentes()
 	return cantidad;
 }
 
+// PRIM
+
+Conexion *Vertice::conexionMinima()
+{
+	// Devuelve la conexión con el menor peso del nodo actual con uno sin visitar
+	Conexion *auxiliar = sublista, *minimo = NULL;
+	while (auxiliar)
+	{
+		if (!auxiliar->adyacente->visitado)
+		{
+			if (!minimo || minimo->peso > auxiliar->peso)
+			{
+				minimo = auxiliar;
+			}
+		}
+		auxiliar = auxiliar->siguiente;
+	}
+	return minimo;
+}
+
 // -------------------- CONEXIÓN --------------------
 
 // CONSTRUCTORES
@@ -412,9 +432,13 @@ bool Grafo::adyacentes(Vertice *nodo1, Vertice *nodo2)
 	return nodo1->esAdyacente(nodo2) || nodo2->esAdyacente(nodo1);
 }
 
+// ÁRBOL DE EXPANSIÓN MÍNIMA
+
 // KRUSKAL
+
 void Grafo::kruskal()
 {
+	std::string reporte = "\n-------------------- KRUSKAL --------------------\n";
 	Ruta conexiones, aem;
 	// conexiones = lista con todas las conexiones
 	// aem = lista con las conexiones del árbol de expansión mínima
@@ -465,4 +489,66 @@ void Grafo::kruskal()
 
 	aem.imprimir("AEM", true);
 	resetearVisitado();
+}
+
+// PRIM
+
+void Grafo::prim(long long int codigoCarrera)
+{
+	std::string reporte = "\n-------------------- PRIM --------------------\n";
+	ReporteEnArchivo::archivoDeReportes->escribir(reporte);
+	reporte = "";
+
+	Vertice *auxiliar = devolverNodo(codigoCarrera);
+	if (auxiliar && auxiliar->sublista)
+	{
+		Vertice *origen;
+		Conexion *adyacente = auxiliar->conexionMinima(), *minimo, *actual;
+		Ruta aem;
+		NodoRuta *conexion;
+		aem.insertarFinal(auxiliar, adyacente->adyacente, adyacente->peso); // Agrega la primera conexión
+		adyacente->adyacente->visitado = true;
+		while (true)
+		{
+			origen = NULL;
+			minimo = NULL;			// Siguiente conexión de menor peso
+			actual = NULL;			// Temporal
+			conexion = aem.primero; // Para recorrer los nodos ya conectados
+			while (conexion)
+			{
+				actual = conexion->origen->conexionMinima();
+				if (actual && (!minimo || minimo->peso > actual->peso))
+				{
+					origen = conexion->origen;
+					minimo = actual;
+				}
+				actual = conexion->llegada->conexionMinima();
+				if (actual && (!minimo || minimo->peso > actual->peso))
+				{
+					origen = conexion->llegada;
+					minimo = actual;
+				}
+				conexion = conexion->siguiente;
+			}
+			if (!minimo)
+			{
+				// Ya no hay nodos por agregar
+				break;
+			}
+			aem.insertarFinal(origen, minimo->adyacente, minimo->peso); // Conecta dos nodos
+			minimo->adyacente->visitado = true; // Para que no se encicle
+		}
+
+		aem.imprimir("AEM", true);
+		resetearVisitado();
+	}
+	else
+	{
+		std::cout << "\n\t[ERROR]\t\tEl nodo [" << codigoCarrera << "] no existe o no tiene adyacentes.\n";
+
+		reporte = "\n\t[ERROR]\t\tEl nodo [";
+		reporte += std::to_string(codigoCarrera);
+		reporte += "] no existe o no tiene adyacentes.\n";
+		ReporteEnArchivo::archivoDeReportes->escribir(reporte);
+	}
 }

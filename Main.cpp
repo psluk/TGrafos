@@ -54,7 +54,7 @@ int main()
 	std::cout << "\n\n";
 	grafo1.imprimir(5001);
 
-
+	grafo1.prim(5001);
 	grafo1.kruskal();
 	grafo1.puntosDeArticulacion();
 
@@ -93,6 +93,7 @@ int main()
 	std::cout << "\n\n";
 	grafo2.imprimir(5001);
 
+	grafo2.prim(5001);
 	grafo2.kruskal();
 	grafo2.puntosDeArticulacion();
 	

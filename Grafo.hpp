@@ -27,6 +27,9 @@ public:
 	int pesoDeConexion(Vertice *adyacente); // Si es adyacente, devuelve el peso. Si no, devuelve -1
 	int cantidadAdyacentes();
 
+	// CONEXIÓN MÍNIMA
+	Conexion *conexionMinima(); // Devuelve la arista con el menor peso
+
 	friend class Grafo;
 	friend class Conexion;
 	friend class Arbol;
@@ -97,8 +100,9 @@ public:
 	bool adyacentes(long long int codigoCarrera1, long long int codigoCarrera2);
 	bool adyacentes(Vertice *nodo1, Vertice *nodo2);
 
-	// KRUSKAL
+	// ÁRBOL DE EXPANSIÓN MÍNIMA
 	void kruskal();
+	void prim(long long int codigoCarrera);
 };
 
 #endif
