@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=00000000c0000000000000000
-UnitCount=13
+UnitCount=15
 
 [VersionInfo]
 Major=1
@@ -161,7 +161,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit12]
-FileName=Funciones auxiliares.hpp
+FileName=FuncionesAuxiliares.hpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -171,7 +171,27 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit13]
-FileName=Funciones auxiliares.cpp
+FileName=FuncionesAuxiliares.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit14]
+FileName=Ruta.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit15]
+FileName=Ruta.hpp
 CompileCpp=1
 Folder=
 Compile=1
