@@ -51,13 +51,13 @@ void Ruta::insertarFinal(Vertice *origen, Vertice *llegada, int peso)
         NodoRuta *auxiliar = primero;
         while (auxiliar->siguiente)
         {
-            if (auxiliar->origen == llegada && auxiliar->llegada == origen)
+            if ((auxiliar->origen == llegada && auxiliar->llegada == origen) || (auxiliar->origen == origen && auxiliar->llegada == llegada))
             {
                 return; // Si hay conexiones en ambos sentidos, solo se inserta una
             }
             auxiliar = auxiliar->siguiente;
         }
-        if (auxiliar->origen == llegada && auxiliar->llegada == origen)
+        if ((auxiliar->origen == llegada && auxiliar->llegada == origen) || (auxiliar->origen == origen && auxiliar->llegada == llegada))
         {
             return; // Si hay conexiones en ambos sentidos, solo se inserta una
         }
@@ -75,7 +75,7 @@ void Ruta::insertarOrdenado(Vertice *origen, Vertice *llegada, int peso)
 
     if (primero)
     {
-        if (primero->origen == llegada && primero->llegada == origen)
+        if ((primero->origen == llegada && primero->llegada == origen) || (primero->origen == origen && primero->llegada == llegada))
         {
             return; // Si hay conexiones en ambos sentidos, solo se inserta una
         }
@@ -92,14 +92,14 @@ void Ruta::insertarOrdenado(Vertice *origen, Vertice *llegada, int peso)
             while (auxiliar->siguiente && auxiliar->siguiente->peso <= peso)
             {
                 // Si el siguiente es menor o igual, sigue avanzando
-                if (auxiliar->origen == llegada && auxiliar->llegada == origen)
+                if ((auxiliar->origen == llegada && auxiliar->llegada == origen) || (auxiliar->origen == origen && auxiliar->llegada == llegada))
                 {
                     return; // Si hay conexiones en ambos sentidos, solo se inserta una
                 }
                 auxiliar = auxiliar->siguiente;
             }
 
-            if (auxiliar->origen == llegada && auxiliar->llegada == origen)
+            if ((auxiliar->origen == llegada && auxiliar->llegada == origen) || (auxiliar->origen == origen && auxiliar->llegada == llegada))
             {
                 return; // Si hay conexiones en ambos sentidos, solo se inserta una
             }

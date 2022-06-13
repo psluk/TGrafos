@@ -109,7 +109,7 @@ void Menu::opcion3(Grafo &grafo1, Grafo &grafo2)
 	}
 	else
 	{
-		grafo2.kruskal();
+		grafo1.kruskal();
 	}
 	system("pause");
 	return;
@@ -118,7 +118,21 @@ void Menu::opcion3(Grafo &grafo1, Grafo &grafo2)
 void Menu::opcion4(Grafo &grafo1, Grafo &grafo2)
 {
 	system("cls");
-	cout<<"\t";
+	cout<<"\tIngrese la carrera por donde se empieza: ";
+	long long int carrera = obtenerVertice(grafo1, grafo2);
+	if (carrera == -1)
+	{
+		return;
+	}
+	if (esGrafo2)
+	{
+		grafo2.dijkstra(carrera, carrera);
+	}
+	else
+	{
+		grafo1.dijkstra(carrera, carrera);
+	}
+	system("pause");
 	return;
 }
 
