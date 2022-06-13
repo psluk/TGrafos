@@ -614,6 +614,7 @@ void Grafo::dijkstra(long long int carreraInicio, long long int carreraFinal)
 					// Si no tiene adyacentes sin visitar, se sacan los ingresados en la pila temporal
 					pila[1].pop();
 					pesos[1].pop();
+					continue;
 				}
 
 				if (pesoTotalMinimo == -1 || (minimo->peso + pesoHastaAuxiliar < pesoTotalMinimo))
