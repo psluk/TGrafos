@@ -3,11 +3,12 @@
 
 #include <string>
 #include "Reportes.hpp"
+#include "Listas.hpp"
 
 // NODO DE VÉRTICE
 
 class Conexion;
-
+class ListaCX;
 class Vertice
 {
 private:
@@ -29,7 +30,12 @@ public:
 
 	// CONEXIÓN MÍNIMA
 	Conexion *conexionMinima(); // Devuelve la arista con el menor peso
+	
+	long long int getCodigo () {return this->codigoCarrera;}
 
+	friend class NodoLista;
+	friend class Lista;
+	friend class ListaCX;
 	friend class Grafo;
 	friend class Conexion;
 	friend class Arbol;
@@ -52,7 +58,13 @@ public:
 	Conexion(Vertice *adyacente);			// Sin peso
 	Conexion(Vertice *adyacente, int peso); // Con peso
 	~Conexion();
-
+	
+	Vertice* getVertice () {return adyacente;}
+	int getPeso () {return peso;}
+	
+	friend class NodoLista;
+	friend class Lista;
+	friend class ListaCX;
 	friend class Vertice;
 	friend class Grafo;
 };
@@ -102,7 +114,14 @@ public:
 
 	// ÁRBOL DE EXPANSIÓN MÍNIMA
 	void kruskal();
-	void prim(long long int codigoCarrera);
+	void prim (long long int codigoCarrera);
+	
+	void setVisibilidad (long long int codigoCarrera, bool visibilidad);
+	bool todosVisitados ();
+	bool estaVisitado (long long int codigo);
+	void dijkstra (long long int inicio, long long int final);
+	void aux_dijkstra_addConxs (Vertice * vertice, ListaCX & list, int total);
+	
 };
 
 #endif

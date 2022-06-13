@@ -3,6 +3,7 @@
 #include "Pila.hpp"
 #include "Arbol.hpp"
 #include "Ruta.hpp"
+#include "Listas.hpp"
 
 // -------------------- VÉRTICE --------------------
 
@@ -552,3 +553,133 @@ void Grafo::prim(long long int codigoCarrera)
 		ReporteEnArchivo::archivoDeReportes->escribir(reporte);
 	}
 }
+
+
+void Grafo::setVisibilidad (long long int codigoCarrera, bool visibilidad)
+{
+	Vertice *auxiliar = primero;
+	while (auxiliar)
+	{
+		if (auxiliar->codigoCarrera == codigoCarrera) {
+			auxiliar->visitado = visibilidad;
+		}
+		auxiliar = auxiliar->siguiente;
+	}
+}
+
+bool Grafo::todosVisitados ()
+{
+	Vertice *auxiliar = primero;
+	while (auxiliar)
+	{
+		if (auxiliar->visitado == false) return false;
+		auxiliar = auxiliar->siguiente;
+	} return true;
+}
+
+bool Grafo::estaVisitado (long long int codigo)
+{
+	Vertice *auxiliar = primero;
+	while (auxiliar)
+	{
+		if (auxiliar->codigoCarrera == codigo && auxiliar->visitado) return true;
+		auxiliar = auxiliar->siguiente;
+	} return false;
+}
+
+void Grafo::aux_dijkstra_addConxs (Vertice * vertice, ListaCX & list, int total)
+{
+	Conexion *auxiliar = vertice->sublista;
+	while (auxiliar)
+	{
+		if (!estaVisitado(auxiliar->adyacente->codigoCarrera) && list.buscar (vertice->getCodigo(), auxiliar->getVertice()->getCodigo()) == NULL ) { 
+			list.insertFinal (vertice->getCodigo(), auxiliar, total);
+		}
+		auxiliar = auxiliar->siguiente;
+	} return;
+}
+
+void Grafo::dijkstra (long long int inicio, long long int final)
+{
+	if (this->primero == NULL) {std::cout<<"Grafo vacio.\n"; return;}
+	if (devolverNodo(inicio) == NULL) {std::cout<<"No se ha encontrado el nodo de partida.\n"; return;}
+	if (devolverNodo(final) == NULL) {std::cout<<"No se ha encontrado el nodo de llegada.\n"; return;}
+	
+	Lista list; list.insertFinal (devolverNodo(inicio)); setVisibilidad (devolverNodo(inicio)->codigoCarrera, true);
+	ListaCX listCX; ListaCX listCX_2; int i = 1;
+	
+	/*Vertice * vertcAux; Conexion* conexAux;
+	int distTotal [30]; int miniTemp = -1; int miniAux = -1; 
+	bool repetir; int cantIter = 0;*/
+	
+	/**********************/
+	bool repetir;
+	int disMinima; int disTotal = 0; long long int codVertAux; int comparador;
+	Conexion* nodConx_uno; pNodListCX nodConxTotal; string str;
+
+	while (!todosVisitados()) {
+		str = "";
+		std::cout<<"EeeeEEEEEEeeeeEEEE-"<<i<<"\n";
+		repetir = true;
+		aux_dijkstra_addConxs (list.getVert(i), listCX, disTotal); //listCX.agregarConexs( list.get(i), this );
+		
+		while (repetir) {
+			std::cout<<"\nEntra-\n";
+			if (i == 1){
+				std::cout<<"\nA-\n";
+				//Obtener dis minima. == Obtener nodos ruta directa mas corta.
+				disMinima = listCX.getDisMinima_Dis();
+				codVertAux = listCX.getCondVert_Minimo();
+				nodConx_uno = listCX.getDisMinima_Nodo();
+				
+				std::cout<<"Nodos Resueltos:\n"<<list.toStringVert()<<"\nNodos no Resueltos:\n"<<listCX.toStringConx();
+				//str = "Distancia Minima: " + disMinima + "\nDistancia Total: "+ disMinima + "\nUltimas conexiones:\n";
+				
+				if (nodConx_uno != NULL) {
+					listCX.eliminar (codVertAux, nodConx_uno->getVertice()->getCodigo());
+					listCX_2.insertFinal(codVertAux, nodConx_uno, disMinima);
+					
+					list.insertFinal ( devolverNodo(nodConx_uno->getVertice()->getCodigo()) ); 
+					setVisibilidad (devolverNodo(nodConx_uno->getVertice()->getCodigo())->codigoCarrera, true);
+					
+					comparador = listCX.getDisMinima_Dis();
+					repetir = disMinima == comparador;
+					
+					//std::cout<<"Nodos Resueltos:\n"<<list.toStringVert()<<"Nodos no Resueltos:\n"<<listCX.toStringConx();
+					std::cout<<"\nDistancia Minima: "<<disMinima<<"\nDistancia Total: "<<disMinima<<"\nUltimas conexiones:\n"<<listCX_2.toStringConx();
+				}
+				
+			} else {
+				std::cout<<"\nB-\n";
+				//Obtener dis minima. //Obtener dis total.
+				disMinima =  listCX.getDisMinima_Dis();
+				disTotal = listCX.getDisTotal_Dis (listCX_2);
+				nodConxTotal = listCX.getDisTotal_Nodo (listCX_2);
+				std::cout<<"\nNodos Resueltos:\n"<<list.toStringVert()<<"\nNodos no Resueltos:\n"<<listCX.toStringConx();
+				
+				if (nodConxTotal != NULL) {
+					listCX.eliminar (nodConxTotal->getCodV(), nodConxTotal->getDato()->getVertice()->getCodigo());
+					listCX_2.insertFinal(nodConxTotal->getCodV(), nodConxTotal->getDato(), disTotal);
+					
+					list.insertFinal ( devolverNodo(nodConxTotal->getDato()->getVertice()->getCodigo()) ); 
+					setVisibilidad (devolverNodo(nodConxTotal->getDato()->getVertice()->getCodigo())->codigoCarrera, true);
+					
+					comparador = listCX.getDisTotal_Dis (listCX_2);
+					repetir = disTotal == comparador;
+					
+					std::cout<<"\nDistancia Minima: "<<disMinima<<"\nDistancia Total: "<<disTotal<<"\nUltimas conexiones:\n"<<listCX_2.toStringConx();
+					if (i == 3) return;
+				}
+			}
+		}
+		i++;
+	}
+}
+
+
+
+
+
+
+
+

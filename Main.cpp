@@ -50,15 +50,17 @@ int main()
 	grafo1.agregarBidireccional(5008, 5009, 19);
 	grafo1.agregarBidireccional(5006, 5008, 20);
 
+	std::cout<<"GRAFO 1:\n\n";
+	
 	grafo1.imprimir();
-	std::cout << "\n\n";
-	grafo1.imprimir(5001);
+	//std::cout << "\n\n";
+	//grafo1.imprimir(5001);
 
-	grafo1.prim(5001);
-	grafo1.kruskal();
-	grafo1.puntosDeArticulacion();
+	//grafo1.prim(5001);
+	//grafo1.kruskal();
+	//grafo1.puntosDeArticulacion();
 
-	std::cout << "\n\n";
+	//std::cout << "\n\n";
 
 	// GRAFO 2
 	
@@ -88,14 +90,19 @@ int main()
 	grafo2.agregarBidireccional(5009, 5007);
 	grafo2.agregarBidireccional(5009, 5012);
 	grafo2.agregarBidireccional(5012, 5008);
+	
+	std::cout<<"GRAFO 2:\n\n";
 
 	grafo2.imprimir();
-	std::cout << "\n\n";
-	grafo2.imprimir(5001);
+	//std::cout << "\n\n";
+	//grafo2.imprimir(5001);
 
-	grafo2.prim(5001);
-	grafo2.kruskal();
-	grafo2.puntosDeArticulacion();
+	//grafo2.prim(5001);
+	//grafo2.kruskal();
+	//grafo2.puntosDeArticulacion();
+	grafo1.dijkstra(5001, 5007);
+	
+	std::cout<<"\n\nFinaliza\n";
 	
 	return 0;
 }
