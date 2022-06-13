@@ -340,13 +340,13 @@ void Grafo::imprimir(long long int codigoCarrera)
 
 // PUNTOS DE ARTICULACIÓN
 
-void Grafo::puntosDeArticulacion()
+void Grafo::puntosDeArticulacion(long long int codigoCarrera)
 {
 	std::string reporte = "\n-------------------- PUNTOS DE ARTICULACION --------------------\n";
 	ReporteEnArchivo::archivoDeReportes->escribir(reporte);
 	reporte = "";
 
-	Vertice *auxiliar = primero;
+	Vertice *auxiliar = devolverNodo(codigoCarrera);
 
 	if (auxiliar)
 	{
@@ -548,6 +548,184 @@ void Grafo::prim(long long int codigoCarrera)
 
 		reporte = "\n\t[ERROR]\t\tEl nodo [";
 		reporte += std::to_string(codigoCarrera);
+		reporte += "] no existe o no tiene adyacentes.\n";
+		ReporteEnArchivo::archivoDeReportes->escribir(reporte);
+	}
+}
+
+// DIJKSTRA
+
+void Grafo::dijkstra(long long int carreraInicio, long long int carreraFinal)
+{
+	std::string reporte = "\n-------------------- DIJKSTRA --------------------\n";
+	ReporteEnArchivo::archivoDeReportes->escribir(reporte);
+	reporte = "";
+
+	Vertice *auxiliar = devolverNodo(carreraInicio);
+
+	if (auxiliar && auxiliar->sublista)
+	{
+		Ruta conexiones; // Todas las conexiones
+
+		Pila pila[2]; // Una pila contendrá los nodos resueltos que tienen nodos sin resolver
+					  // La otra contendrá nodos temporalmente
+
+		Pila nuevos;  // Adyacentes conectados en el último paso
+		Pila nuevosPesos;
+
+		Pila pesos[2]; // Esta pila contendrá los costos desde el inicio hasta cada 
+					   // nodo de las otras dos pilas
+
+		Vertice *origen, *destino; // origen y destino de la nueva conexión
+		Vertice *peso;			   // para la pila de los pesos
+		Conexion *minimo;		   // auxiliar del adyacente de menor peso
+		Conexion *conexAux;
+		int pesoTotalMinimo;	   // peso mínimo desde el inicio hasta el adyacente nuevo
+		int pesoHastaAuxiliar;
+		int pesoNuevo;			   // peso de la conexión nueva
+
+		pila[0].push(auxiliar);
+		auxiliar->visitado = true;
+		pesos[0].push(new Vertice(0)); // 0 = costo desde el origen (empieza en 0)
+
+		while (!pila[0].vacia())
+		{
+			// Mientras la pila tenga elementos, hace este ciclo
+			
+			// Resetea las variables necesarias
+			origen = destino = NULL;
+			pesoTotalMinimo = pesoHastaAuxiliar = -1;
+			while (!pila[0].vacia())
+			{
+				// Ciclo para pasar los vértices de esta pila a la otra
+				// (verifica uno por uno cuál adyacente tiene el menor peso desde el origen)
+				auxiliar = pila[0].pop();
+				peso = pesos[0].pop(); // Peso desde el inicio hasta "auxiliar"
+				pesoHastaAuxiliar = peso->codigoCarrera;
+
+				// Mete los nodos sacados a la pila temporal
+				pila[1].push(auxiliar);
+				pesos[1].push(peso);
+
+				minimo = auxiliar->conexionMinima(); // adyacente de menor peso;
+
+				if (!minimo)
+				{
+					// Si no tiene adyacentes sin visitar, se sacan los ingresados en la pila temporal
+					pila[1].pop();
+					pesos[1].pop();
+				}
+
+				if (pesoTotalMinimo == -1 || (minimo->peso + pesoHastaAuxiliar < pesoTotalMinimo))
+				{
+					// Si no se ha encontrado un adyacente para agregar
+					// o si se encontró uno cuyo costo es menor
+					pesoTotalMinimo = minimo->peso + pesoHastaAuxiliar;
+					origen = auxiliar;
+					destino = minimo->adyacente;
+					pesoNuevo = minimo->peso;
+				}
+			}
+
+			if (origen)
+			{
+				conexiones.insertarFinal(origen, destino, pesoNuevo);
+				nuevos.push(destino);
+				nuevosPesos.push(new Vertice(pesoTotalMinimo));
+			}
+
+			// Ahora pasa todos los elementos de pila[1] a pila[0]
+			// Si encuentra una conexión cuyo costo desde el inicio es igual,
+			// la agrega a la lista de conexiones
+
+			while (!pila[1].vacia())
+			{
+				auxiliar = pila[1].pop();
+				peso = pesos[1].pop(); // Peso desde el inicio hasta "auxiliar"
+				pesoHastaAuxiliar = peso->codigoCarrera;
+
+				minimo = auxiliar->conexionMinima(); // adyacente de menor peso;
+
+				if (!minimo)
+				{
+					// Si entra aquí, ya no tiene adyacentes sin procesar,
+					// así que no lo vuelve a meter a la pila original
+					continue;
+				}
+
+				conexAux = auxiliar->sublista;
+
+				while (conexAux)
+				{
+					// Recorre los adyacentes y agrega todos los que tengan el mismo
+					// costo desde el origen
+					if (!conexAux->adyacente->visitado)
+					{
+						// Hace esto mientras que el adyacente actual no esté visitado
+						if (conexAux->peso + pesoHastaAuxiliar == pesoTotalMinimo)
+						{
+							// (La lista de conexiones revisa que no haya duplicados en las rutas)
+							conexiones.insertarFinal(auxiliar, minimo->adyacente, minimo->peso);
+							nuevos.push(minimo->adyacente);
+							nuevosPesos.push(new Vertice(pesoTotalMinimo));
+						}
+					}
+					conexAux = conexAux->siguiente;
+				}
+
+				// Mete los nodos sacados a la pila original
+				pila[0].push(auxiliar);
+				pesos[0].push(peso);
+			}
+
+			while (!nuevos.vacia())
+			{
+				// Ciclo que marca los nuevos agregados como visitados
+				auxiliar = nuevos.pop();
+				peso = nuevosPesos.pop();
+				if (auxiliar && !auxiliar->visitado)
+				{
+					pila[0].push(auxiliar);
+					pesos[0].push(peso);
+					auxiliar->visitado = true;
+				}
+			}
+
+			while (!pila[0].vacia())
+			{
+				// Saca los que no tengan más adyacentes sin visitar
+				auxiliar = pila[0].pop();
+				peso = pesos[0].pop();
+
+				if (auxiliar->conexionMinima())
+				{
+					// Si tiene alguna conexión mínima, es porque algún adyacente no está visitado
+					// Se agrega a la pila temporal
+					pila[1].push(auxiliar);
+					pesos[1].push(peso);
+				}
+			}
+
+			// Pasa los elementos de pila[1] (del ciclo anterior) a la pila original
+			while (!pila[1].vacia())
+			{
+				auxiliar = pila[1].pop();
+				peso = pesos[1].pop();
+
+				pila[0].push(auxiliar);
+				pesos[0].push(peso);
+			}
+		}
+
+		conexiones.imprimir("Conexiones", true);
+		resetearVisitado();
+	}
+	else
+	{
+		std::cout << "\n\t[ERROR]\t\tEl nodo [" << carreraInicio << "] no existe o no tiene adyacentes.\n";
+
+		reporte = "\n\t[ERROR]\t\tEl nodo [";
+		reporte += std::to_string(carreraInicio);
 		reporte += "] no existe o no tiene adyacentes.\n";
 		ReporteEnArchivo::archivoDeReportes->escribir(reporte);
 	}

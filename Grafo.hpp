@@ -91,7 +91,7 @@ public:
 	void imprimir(long long int codigoCarrera); // codigoCarrera = donde empieza
 
 	// PUNTOS DE ARTICULACIÓN
-	void puntosDeArticulacion();
+	void puntosDeArticulacion(long long int codigoCarrera);
 
 	// COMPROBACIONES
 	bool existe(long long int codigoCarrera);
@@ -103,6 +103,9 @@ public:
 	// ÁRBOL DE EXPANSIÓN MÍNIMA
 	void kruskal();
 	void prim(long long int codigoCarrera);
+
+	// DIJKSTRA
+	void dijkstra(long long int carreraInicio, long long int carreraFinal);
 };
 
 #endif

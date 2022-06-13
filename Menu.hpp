@@ -15,19 +15,26 @@ class Menu
 {
 	//Atributos.
 	private:
+		bool esGrafo2 = false; // Empieza en el grafo 1
+
+		// PARA RECIBIR ENTRADAS DE TECLADO
+    	int obtenerOpcionMenu(int cantidadDeElementos);
+		long long int obtenerVertice(Grafo &grafo1, Grafo &grafo2);
+
+		// VACIAR ENTRADA
+    	void vaciarEntrada(); // Después de leer un valor no válido
 		
 	//Metodos.
 	public:
-		Menu () {
-		}
-		void menu_Principal ();
+		Menu () {}
+		void menu_Principal (Grafo &grafo1, Grafo &grafo2);
 		
-		void opcion1 ();
-		void opcion2 ();
-		void opcion3 ();
-		void opcion4 ();
-		void opcion5 ();
-		void opcion6 ();
+		void opcion1 (Grafo &grafo1, Grafo &grafo2);
+		void opcion2 (Grafo &grafo1, Grafo &grafo2);
+		void opcion3 (Grafo &grafo1, Grafo &grafo2);
+		void opcion4 (Grafo &grafo1, Grafo &grafo2);
+		void opcion5 (Grafo &grafo1, Grafo &grafo2);
+		void opcion6 (Grafo &grafo1, Grafo &grafo2);
 };
 
 #endif

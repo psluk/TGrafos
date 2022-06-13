@@ -1,7 +1,5 @@
-
-
-
 #include "LeerArchivos.h"
+#include "Reportes.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -50,21 +48,77 @@ long long int Archivos::convertirArregloALongLong(char *arreglo)
 
 // RÓTULOS
 
-
-
-
-void Archivos::leerEstudiantes(Grafo &grafo) 
+void Archivos::imprimirRotuloInicial()
 {
-    std::ifstream archivoEstudiantes;
-   
-    archivoEstudiantes.open("Vertices1.txt");
-    if (!archivoEstudiantes.is_open())
+    std::string resultado = "\t\t\t\tLectura de archivos\n";
+    std::cout << "\n"
+              << resultado;
+    ReporteEnArchivo::archivoDeReportes->escribir(resultado);
+}
+
+void Archivos::imprimirLeyendo(std::string rutaDeArchivo)
+{
+    std::string resultado = "Leyendo \"";
+    resultado += rutaDeArchivo;
+    resultado += "\"...\n";
+    std::cout << "\n"
+              << resultado;
+    ReporteEnArchivo::archivoDeReportes->escribir(resultado);
+}
+
+void Archivos::imprimirNoEncontrado(std::string rutaDeArchivo)
+{
+    std::string resultado = "\t[ERROR]\t\tNo se pudo encontrar el archivo \"";
+    resultado += rutaDeArchivo;
+    resultado += "\".\n";
+    std::cout << resultado;
+    ReporteEnArchivo::archivoDeReportes->escribir(resultado);
+}
+
+void Archivos::imprimirFaltaParametros(std::string linea)
+{
+    std::string resultado = "\t[ERROR]\t\tNo hay datos suficientes para leer: \"";
+    resultado += linea;
+    resultado += "\".\n";
+    std::cout << resultado;
+    ReporteEnArchivo::archivoDeReportes->escribir(resultado);
+}
+
+void Archivos::imprimirInvalido(std::string valor, std::string linea)
+{
+    std::string resultado = "\t[ERROR]\t\tNo se pudo leer el valor \"";
+    resultado += valor;
+    resultado += "\", en \"";
+    resultado += linea;
+    resultado += "\".\n";
+    std::cout << resultado;
+    ReporteEnArchivo::archivoDeReportes->escribir(resultado);
+}
+
+void Archivos::imprimirOtroError(std::string tipo, std::string valor)
+{
+    std::string resultado = "\t[";
+    resultado += tipo;
+    resultado += "]\t\t";
+    resultado += valor;
+    resultado += ".\n";
+    std::cout << resultado;
+    ReporteEnArchivo::archivoDeReportes->escribir(resultado);
+}
+
+void Archivos::leerVertices(Grafo &grafo, std::string rutaDeArchivo)
+{
+    std::ifstream archivoVertices;
+    imprimirLeyendo(rutaDeArchivo);
+
+    archivoVertices.open(rutaDeArchivo);
+    if (!archivoVertices.is_open())
     {
-        
+        imprimirNoEncontrado(rutaDeArchivo);
         return;
     }
     std::string linea;
-    while (getline(archivoEstudiantes, linea))
+    while (getline(archivoVertices, linea))
     {
         if (linea == "")
         {
@@ -74,32 +128,31 @@ void Archivos::leerEstudiantes(Grafo &grafo)
         char lineaChar[linea.size() + 1];
         strcpy(lineaChar, linea.c_str());
 
-        long long int id = convertirArregloALongLong(lineaChar); 
+        long long int id = convertirArregloALongLong(lineaChar);
         if (id == -2)
         {
-            
+
             continue;
         }
-        
+
         grafo.agregarNodo(id);
-        
     }
-    archivoEstudiantes.close();
+    archivoVertices.close();
 }
 
-
-void Archivos::leerCon(Grafo &grafo) 
+void Archivos::leerConexiones(Grafo &grafo, std::string rutaDeArchivo, bool existePeso)
 {
-    std::ifstream archivoGrupo;
-  
-    archivoGrupo.open("Conexiones1.txt");
-    if (!archivoGrupo.is_open())
+    std::ifstream archivoConexiones;
+    imprimirLeyendo(rutaDeArchivo);
+
+    archivoConexiones.open(rutaDeArchivo);
+    if (!archivoConexiones.is_open())
     {
-      	std::cout<<"no abrio  ";
+        imprimirNoEncontrado(rutaDeArchivo);
         return;
     }
     std::string linea;
-    while (getline(archivoGrupo, linea))
+    while (getline(archivoConexiones, linea))
     {
         if (linea == "")
         {
@@ -109,55 +162,53 @@ void Archivos::leerCon(Grafo &grafo)
         char lineaChar[linea.size() + 1];
         strcpy(lineaChar, linea.c_str());
 
-        char *codigoCarreraChar = strtok(lineaChar, ";");
-        if (codigoCarreraChar == NULL)
+        char *id1Char = strtok(lineaChar, ";");
+        if (id1Char == NULL)
         {
-         
+            imprimirFaltaParametros(linea);
             continue;
         }
 
-        long long int codigoCarrera = convertirArregloALongLong(codigoCarreraChar); 
-        if (codigoCarrera == -2)
+        long long int id1 = convertirArregloALongLong(id1Char);
+        if (id1 == -2)
         {
-            
+            imprimirInvalido(id1Char, linea);
             continue;
         }
 
-        char *codigoCursoChar = strtok(NULL, ";");
-        if (codigoCursoChar == NULL)
+        char *id2Char = strtok(NULL, ";");
+        if (id2Char == NULL)
         {
-            
+            imprimirFaltaParametros(linea);
             continue;
         }
 
-        long long int codigoCurso = convertirArregloALongLong(codigoCursoChar); 
-        if (codigoCurso == -2)
+        long long int id2 = convertirArregloALongLong(id2Char);
+        if (id2 == -2)
         {
-            
+            imprimirInvalido(id2Char, linea);
             continue;
         }
 
-        char *codigoGrupoChar = strtok(NULL, ";");
-        if (codigoGrupoChar == NULL)
+        long long int peso = 0;
+        if (existePeso)
         {
-           
-            continue;
+            char *pesoChar = strtok(NULL, ";");
+            if (pesoChar == NULL)
+            {
+                imprimirFaltaParametros(linea);
+                continue;
+            }
+
+            peso = convertirArregloALongLong(pesoChar);
+            if (peso == -2)
+            {
+                imprimirInvalido(pesoChar, linea);
+                continue;
+            }
         }
 
-        long long int codigoGrupo = convertirArregloALongLong(codigoGrupoChar); 
-        if (codigoGrupo == -2)
-        {
-           
-            continue;
-        }
-	
-	grafo.agregarBidireccional(codigoCarrera,codigoCurso,codigoGrupo);
-	
+        grafo.agregarBidireccional(id1, id2, peso);
     }
-    archivoGrupo.close();
+    archivoConexiones.close();
 }
-
-
-
-
-
